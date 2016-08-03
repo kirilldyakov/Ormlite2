@@ -37,7 +37,7 @@ public class PickDAO extends BaseDaoImpl<Pick, Integer> {
         List<Pick> listToReturn = new ArrayList<Pick>();
         QueryBuilder<Pick, Integer> qb = this.queryBuilder();
         qb.where().ge("Amplitude", filter);
-        qb.orderBy("Id",false);
+        qb.orderBy("Id",true);
         listToReturn = (List<Pick>) qb.query();
         return listToReturn;
     }

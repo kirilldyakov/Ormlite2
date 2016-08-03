@@ -28,6 +28,7 @@ import org.androidannotations.annotations.OptionsMenu;
 import org.androidannotations.annotations.ViewById;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -148,7 +149,7 @@ public class Graph extends Activity {
             e.printStackTrace();
         }
 
-        List<Pick> picks = null;
+        List<Pick> picks = new ArrayList<Pick>();
         try {
             picks =HelperFactory.getHelper().getPickDAO().getAllPicksWhereAmplitudeGE(filter);
         } catch (SQLException e) {
@@ -156,15 +157,16 @@ public class Graph extends Activity {
         }
 
         long dtl_F1= 0;
-        List<Pick> picks_F1 = null;
-        if (picks != null) {
+        long d=0;
+        List<Pick> picks_F1 = new ArrayList<Pick>();
             for(Pick pick: picks){
-                if (pick.getDateTimeLong()-dtl_F1 > 2*1000){
+                d=dtl_F1-(long)pick.getDateTimeLong();
+                if ( Math.abs(d) > 2*1000){
                         picks_F1.add(pick);
                         dtl_F1 = pick.getDateTimeLong();
                     }
                 }
-        }
+
 
         double prev_x = 0;
         //double prev_y = 0;
@@ -177,7 +179,7 @@ public class Graph extends Activity {
             double x = (dtl-minDT)/1000; // секунды от начала
 
             double y = pick_f1.getAmplitude();
-            if (x!=0) y = 3600 / (tickCount * (x - prev_x));
+            if (x!=0) y = (3600/(x - prev_x))*(1/tickCount);
             this.data[i++] = new DataPoint(x, y);
             //prev_y = y;
             prev_x = x;
